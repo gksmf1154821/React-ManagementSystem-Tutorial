@@ -42,9 +42,22 @@ const styles = theme => ({ /* style 명시  */
 
 class App extends Component {
 
-  state = {
-    customers : "",
-    completed : 0
+  constructor(props) { //생성자
+    super(props);
+    this.state ={
+        customers : "",
+        completed : 0
+    }
+  }
+
+  stateRefresh = () => {
+    this.setState({
+      customers:'',
+      completed : 0
+    });
+    this.callApi()
+    .then(res => this.setState({customers : res}))
+    .catch(err => console.log(err));
   }
 
   componentDidMount(){ /*API 비동기적으로 호출. */
@@ -81,6 +94,7 @@ class App extends Component {
               <TableCell>생년월일</TableCell>
               <TableCell>성별</TableCell>
               <TableCell>직업</TableCell>
+              <TableCell>설정</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -88,7 +102,7 @@ class App extends Component {
               {
                 this.state.customers ? this.state.customers.map(c => {
                   return(
-                    <Customer key={c.id} id={c.id} name={c.name} birthday={c.birthday} image={c.image} job={c.job} gender={c.gender}/>
+                    <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} name={c.name} birthday={c.birthday} image={c.image} job={c.job} gender={c.gender}/>
                   ); 
                 }) :
                 <TableRow>
@@ -100,7 +114,7 @@ class App extends Component {
           </TableBody>
         </Table>
       </Paper>
-      <CustomerAdd/>
+      <CustomerAdd stateRefresh={this.stateRefresh}/>
       </div>
     )
   }
